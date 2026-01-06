@@ -1,0 +1,53 @@
+# Portfolio Optimization Project - Requirements
+# Install using: pip install -r requirements.txt
+
+# Data Collection & Manipulation
+yfinance                        # Yahoo Finance API for stock data
+pandas                          # Data manipulation and analysis
+numpy                           # Numerical computing
+
+# Visualization
+matplotlib                      # Basic plotting
+seaborn                         # Statistical visualizations
+plotly                          # Interactive plots
+
+# Machine Learning - Classical
+scikit-learn                    # ML algorithms and tools
+
+# Machine Learning - Deep Learning                
+keras                           # High-level neural networks API
+
+# Reinforcement Learning
+stable-baselines3               # RL algorithms (PPO, DDPG, etc.)
+gymnasium                       # RL environments (replaces gym)
+
+# Portfolio Optimization Libraries
+cvxpy                           # Convex optimization
+PyPortfolioOpt                  # Portfolio optimization toolkit
+riskfolio-lib                   # Advanced portfolio optimization
+
+# Statistical Analysis
+scipy                           # Scientific computing
+statsmodels                     # Statistical modeling
+
+# Technical Indicators
+ta                              # Technical analysis library
+TA-Lib                          # Technical analysis (optional, requires C++ compiler)
+
+# Backtesting
+bt                              # Backtesting framework
+vectorbt                        # Fast backtesting with vectorization
+
+# Dashboard (for Part 8)
+streamlit                       # Web dashboard framework
+dash                            # Alternative dashboard framework
+
+# Utilities
+tqdm                            # Progress bars
+joblib                          # Parallel processing
+openpyxl                        # Excel file support
+xlsxwriter                      # Excel writing
+
+# Jupyter Notebook extensions
+ipywidgets                      # Interactive widgets
+jupyter                         # Jupyter notebook
