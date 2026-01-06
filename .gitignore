@@ -1,0 +1,82 @@
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Data files (usually too large for git)
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.npy
+*.npz
+data/
+datasets/
+raw_data/
+processed_data/
+
+# Model files (often too large)
+*.h5
+*.keras
+*.pt
+*.pth
+*.ckpt
+*.pb
+*.onnx
+models/
+checkpoints/
+
+# Environment and secrets
+.env
+.env.local
+credentials.json
+config.local.py
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs and outputs
+*.log
+logs/
+mlruns/
+runs/
+wandb/
+tensorboard/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS files
+.DS_Store
+Thumbs.db
