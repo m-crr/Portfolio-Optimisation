@@ -1,4 +1,3 @@
-# Portfolio Optimization Project - Requirements
 # Install using: pip install -r requirements.txt
 
 # Data Collection & Manipulation
@@ -38,7 +37,7 @@ TA-Lib                          # Technical analysis (optional, requires C++ com
 bt                              # Backtesting framework
 vectorbt                        # Fast backtesting with vectorization
 
-# Dashboard (for Part 8)
+# Dashboard
 streamlit                       # Web dashboard framework
 dash                            # Alternative dashboard framework
 
