@@ -4,10 +4,9 @@
 
 # Python
 __pycache__/
-*.py[cod]
+*.pyc
 *$py.class
 *.so
-.Python
 
 # Virtual environments
 venv/
@@ -18,7 +17,6 @@ env.bak/
 venv.bak/
 
 # Data files (usually too large for git)
-*.csv
 *.xlsx
 *.xls
 *.parquet
