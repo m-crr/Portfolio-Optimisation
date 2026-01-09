@@ -1,5 +1,3 @@
-import os
-
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -20,6 +18,7 @@ def download_data(tickers, start_date, end_date, progress=True):
             group_by="tickers",
             auto_adjust=True,
         )
+        data
 
         if data.empty:
             raise ValueError(
@@ -207,6 +206,12 @@ def data_validation(returns, prices):
 def data_write(
     prices_data, returns_data, volume_data, summary_stats_data, folder_name, date_format
 ):
+    prices_data = prices_data.reset_index()
+    returns_data = returns_data.reset_index()
+    volume_data = volume_data.reset_index()
+
+    import os
+
     parent_dir = os.path.dirname(os.getcwd())
     new_folder_path = os.path.join(parent_dir, folder_name)
     os.makedirs(new_folder_path, exist_ok=True)
@@ -220,7 +225,7 @@ def data_write(
     volume_data.to_csv(
         f"{new_folder_path}/volume.csv", index=False, date_format=date_format
     )
-    summary_stats_data.to_csv(f"{new_folder_path}/summary_stats.csv", index=False)
+    summary_stats_data.to_csv(f"{new_folder_path}/summary_stats.csv")
 
     print(f"Dataframes saved to {new_folder_path} as .csv files")
 
@@ -239,7 +244,7 @@ def data_write(
             excel_output, engine="xlsxwriter", date_format=date_format
         ) as writer:
             for sheet_name, df in df_to_write.items():
-                df.to_excel(writer, sheet_name=sheet_name, index=False)
+                df.to_excel(writer, sheet_name=sheet_name)
         print(f"Dataframes saved to {new_folder_path} as an excel file")
 
     except Exception as e:
