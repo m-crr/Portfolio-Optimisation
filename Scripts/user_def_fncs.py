@@ -32,6 +32,9 @@ def download_data(tickers, start_date, end_date, progress=True):
         return None
 
 
+# _________________________________________________________________________________________________________________________#
+
+
 # To convert daily returns, adj. close price, and volume to dataframes.
 
 
@@ -66,6 +69,9 @@ def process_raw_data(raw_data, tickers):
     print(f"Missing values in returns: {returns.isna().sum().sum()}")
 
     return {"prices": prices, "returns": returns, "volume": volume}
+
+
+# _________________________________________________________________________________________________________________________#
 
 
 # To obtain stats like annulized returnd and volitility, Sharpe ratio, max drawdown, and total returns.
@@ -114,6 +120,9 @@ def summary_stats(returns, prices, risk_free_rate):
     stats["start_price"] = stats["start_price"].apply(lambda x: f"{x:.2f}")
 
     return stats
+
+
+# _________________________________________________________________________________________________________________________#
 
 
 # To analyze correlation between different assets within a portfolio.
@@ -167,6 +176,9 @@ def correlation_analysis(returns):
     return corr_matrix
 
 
+# _________________________________________________________________________________________________________________________#
+
+
 # To validate missing values and outliers.
 
 
@@ -200,7 +212,10 @@ def data_validation(returns, prices):
     return all_checks_passed
 
 
-# To save dataframes to .csv and .xlsx files
+# _________________________________________________________________________________________________________________________#
+
+
+# To save data to .csv and .xlsx files.
 
 
 def data_write(
@@ -216,18 +231,35 @@ def data_write(
     new_folder_path = os.path.join(parent_dir, folder_name)
     os.makedirs(new_folder_path, exist_ok=True)
 
-    prices_data.to_csv(
-        f"{new_folder_path}/prices.csv", index=False, date_format=date_format
-    )
-    returns_data.to_csv(
-        f"{new_folder_path}/returns.csv", index=False, date_format=date_format
-    )
-    volume_data.to_csv(
-        f"{new_folder_path}/volume.csv", index=False, date_format=date_format
-    )
-    summary_stats_data.to_csv(f"{new_folder_path}/summary_stats.csv")
+    if not os.path.exists(f"{new_folder_path}/prices.csv"):
+        prices_data.to_csv(
+            f"{new_folder_path}/prices.csv", index=False, date_format=date_format
+        )
+        print(f"Prices dataframe saved to {new_folder_path} as a .csv file")
+    else:
+        print("Error: A .csv file for prices already exists")
 
-    print(f"Dataframes saved to {new_folder_path} as .csv files")
+    if not os.path.exists(f"{new_folder_path}/returns.csv"):
+        returns_data.to_csv(
+            f"{new_folder_path}/returns.csv", index=False, date_format=date_format
+        )
+        print(f"Returns dataframe saved to {new_folder_path} as a .csv file")
+    else:
+        print("Error: A .csv file for returns already exists")
+
+    if not os.path.exists(f"{new_folder_path}/volume.csv"):
+        volume_data.to_csv(
+            f"{new_folder_path}/volume.csv", index=False, date_format=date_format
+        )
+        print(f"Volume dataframe saved to {new_folder_path} as a .csv file")
+    else:
+        print("Error: A .csv file for volumes already exists")
+
+    if not os.path.exists(f"{new_folder_path}/summary_stats.csv"):
+        summary_stats_data.to_csv(f"{new_folder_path}/summary_stats.csv")
+        print(f"Summary dataframe saved to {new_folder_path} as a .csv file")
+    else:
+        print("Error: A .csv file for summary stats already exists")
 
     df_to_write = {
         "Daily Prices": prices_data,
@@ -239,13 +271,16 @@ def data_write(
     excel_file_name = "data_excel.xlsx"
     excel_output = os.path.join(new_folder_path, excel_file_name)
 
-    try:
-        with pd.ExcelWriter(
-            excel_output, engine="xlsxwriter", date_format=date_format
-        ) as writer:
-            for sheet_name, df in df_to_write.items():
-                df.to_excel(writer, sheet_name=sheet_name)
-        print(f"Dataframes saved to {new_folder_path} as an excel file")
+    if not os.path.exists(excel_output):
+        try:
+            with pd.ExcelWriter(
+                excel_output, engine="xlsxwriter", date_format=date_format
+            ) as writer:
+                for sheet_name, df in df_to_write.items():
+                    df.to_excel(writer, sheet_name=sheet_name)
+            print(f"Dataframes saved to {new_folder_path} as an excel file")
 
-    except Exception as e:
-        print(f"An error occurred while writing data frames to an excel file {e}")
+        except Exception as e:
+            print(f"An error occurred while writing data frames to an excel file {e}")
+    else:
+        print("Error: A combined excel file already exists")
