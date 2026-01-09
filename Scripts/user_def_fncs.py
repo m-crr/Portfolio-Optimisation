@@ -200,17 +200,17 @@ def data_validation(returns, prices):
     return all_checks_passed
 
 
-# To save dataframes to .csv and .xlsx files.
+# To save dataframes to .csv and .xlsx files
 
 
 def data_write(
     prices_data, returns_data, volume_data, summary_stats_data, folder_name, date_format
 ):
+    import os
+
     prices_data = prices_data.reset_index()
     returns_data = returns_data.reset_index()
     volume_data = volume_data.reset_index()
-
-    import os
 
     parent_dir = os.path.dirname(os.getcwd())
     new_folder_path = os.path.join(parent_dir, folder_name)
