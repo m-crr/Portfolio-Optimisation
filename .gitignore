@@ -17,7 +17,8 @@ env.bak/
 venv.bak/
 
 # Data files (usually too large for git)
-*.xlsx
+# *.xlsx
+*.csv
 *.xls
 *.parquet
 *.feather
@@ -28,7 +29,7 @@ venv.bak/
 *.joblib
 *.npy
 *.npz
-data/
+# data/
 datasets/
 raw_data/
 processed_data/
