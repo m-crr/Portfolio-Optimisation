@@ -27,7 +27,7 @@ def download_data(tickers, start_date, end_date, progress=True):
         return data
 
     except Exception as e:
-        print(f"Error downloading data: {str(e)}")
+        print(f"Error downloading data: {str(e)}\n")
 
         return None
 
@@ -57,16 +57,16 @@ def process_raw_data(raw_data, tickers):
                     prices[ticker] = raw_data[ticker]
                     volume[ticker] = raw_data[ticker]
             except KeyError:
-                print(f"Warning: No data found for ticker {ticker}. Skipping.")
+                print(f"Warning: No data found for ticker {ticker}. Skipping.\n")
 
     returns = prices.pct_change()
     returns = returns.dropna()
 
-    print("Processed data:")
-    print(f"Prices shape: {prices.shape}")
-    print(f"Returns shape: {returns.shape}")
-    print(f"Missing values in prices: {prices.isna().sum().sum()}")
-    print(f"Missing values in returns: {returns.isna().sum().sum()}")
+    print("Processed data:\n")
+    print(f"Prices shape: {prices.shape}\n")
+    print(f"Returns shape: {returns.shape}\n")
+    print(f"Missing values in prices: {prices.isna().sum().sum()}\n")
+    print(f"Missing values in returns: {returns.isna().sum().sum()}\n")
 
     return {"prices": prices, "returns": returns, "volume": volume}
 
@@ -74,15 +74,19 @@ def process_raw_data(raw_data, tickers):
 # =========================================================================================================
 
 
-# To obtain stats like annulized returnd and volitility, Sharpe ratio, max drawdown, and total returns.
+# To obtain stats like annulized returns and volitility, Sharpe ratio, max drawdown, and total returns.
 
 
-def summary_stats(returns, prices, risk_free_rate):
+def summary_stats(returns, prices, risk_free_rate, start_date, end_date):
     stats = pd.DataFrame(index=returns.columns)
 
+    number_trading_days = 252
+
     # Annualized Return
-    avg_daily_return = returns.mean()
-    stats["annualized_return"] = ((1 + avg_daily_return) ** 252) - 1
+    return_for_cagr = (returns + 1).prod()
+    stats["annualized_return"] = (
+        (return_for_cagr) ** (number_trading_days / len(returns))
+    ) - 1
 
     # Annualized Volatility
     daily_volatility = returns.std()
@@ -103,8 +107,8 @@ def summary_stats(returns, prices, risk_free_rate):
 
     stats["max_drawdown"] = mdd
 
-    stats["current_price"] = prices.iloc[-1]
-    stats["start_price"] = prices.iloc[0]
+    stats[f"current_price_{end_date}"] = prices.iloc[-1]
+    stats[f"start_price_{start_date}"] = prices.iloc[0]
     stats["total_returns"] = (prices.iloc[-1] - prices.iloc[0]) / prices.iloc[0]
 
     for col in [
@@ -116,8 +120,12 @@ def summary_stats(returns, prices, risk_free_rate):
         stats[col] = stats[col].apply(lambda x: f"{x * 100:.2f}%")
 
     stats["sharpe_ratio"] = stats["sharpe_ratio"].apply(lambda x: f"{x:.3f}")
-    stats["current_price"] = stats["current_price"].apply(lambda x: f"{x:.2f}")
-    stats["start_price"] = stats["start_price"].apply(lambda x: f"{x:.2f}")
+    stats[f"current_price_{end_date}"] = stats[f"current_price_{end_date}"].apply(
+        lambda x: f"{x:.2f}"
+    )
+    stats[f"start_price_{start_date}"] = stats[f"start_price_{start_date}"].apply(
+        lambda x: f"{x:.2f}"
+    )
 
     return stats
 
@@ -171,7 +179,7 @@ def correlation_analysis(returns):
         low_corr_df = pd.DataFrame(low_corr).sort_values("correlation")
         print(low_corr_df.to_string(index=False))
     else:
-        print("There are no pairs with correlation < 0.3")
+        print("There are no pairs with correlation < 0.3\n")
 
     return corr_matrix
 
@@ -189,25 +197,25 @@ def data_validation(returns, prices):
     missing_prices = prices.isna().sum()
 
     if missing_returns.sum() > 0:
-        print(f"Warning - Found {missing_returns.sum()} missing values in return")
-        print(missing_returns[missing_returns > 0])
+        print(f"Warning - Found {missing_returns.sum()} missing values in returns")
+        print(f"{missing_returns[missing_returns > 0]}\n")
         all_checks_passed = False
     else:
-        print("No missing values in returns")
+        print("No missing values in returns \n")
 
     if missing_prices.sum() > 0:
         print(f"Warning - Found {missing_prices.sum()} missing values in prices")
-        print(missing_prices[missing_prices > 0])
+        print(f"{missing_prices[missing_prices > 0]}\n")
         all_checks_passed = False
     else:
-        print("No missing values in prices")
+        print("No missing values in prices \n")
 
     extreme_returns = (returns.abs() > 0.5).sum()
     if extreme_returns.sum() > 0:
         print(f"Warning - Found {extreme_returns.sum()} extreme return")
-        print(extreme_returns[extreme_returns > 0])
+        print(f"{extreme_returns[extreme_returns > 0]}\n")
     else:
-        print("No extreme returns found")
+        print("No extreme returns found \n")
 
     return all_checks_passed
 
@@ -226,6 +234,7 @@ def data_write(
     prices_data = prices_data.reset_index()
     returns_data = returns_data.reset_index()
     volume_data = volume_data.reset_index()
+    summary_stats_data = summary_stats_data.reset_index()
 
     parent_dir = os.path.dirname(os.getcwd())
     new_folder_path = os.path.join(parent_dir, folder_name)
@@ -235,31 +244,31 @@ def data_write(
         prices_data.to_csv(
             f"{new_folder_path}/prices.csv", index=False, date_format=date_format
         )
-        print(f"Prices dataframe saved to {new_folder_path} as a .csv file")
+        print(f"Prices dataframe saved to {new_folder_path} as a .csv file \n")
     else:
-        print("Error: A .csv file for prices already exists")
+        print("Error: A .csv file for prices already exists \n")
 
     if not os.path.exists(f"{new_folder_path}/returns.csv"):
         returns_data.to_csv(
             f"{new_folder_path}/returns.csv", index=False, date_format=date_format
         )
-        print(f"Returns dataframe saved to {new_folder_path} as a .csv file")
+        print(f"Returns dataframe saved to {new_folder_path} as a .csv file \n")
     else:
-        print("Error: A .csv file for returns already exists")
+        print("Error: A .csv file for returns already exists \n")
 
     if not os.path.exists(f"{new_folder_path}/volume.csv"):
         volume_data.to_csv(
             f"{new_folder_path}/volume.csv", index=False, date_format=date_format
         )
-        print(f"Volume dataframe saved to {new_folder_path} as a .csv file")
+        print(f"Volume dataframe saved to {new_folder_path} as a .csv file \n")
     else:
-        print("Error: A .csv file for volumes already exists")
+        print("Error: A .csv file for volumes already exists \n")
 
     if not os.path.exists(f"{new_folder_path}/summary_stats.csv"):
         summary_stats_data.to_csv(f"{new_folder_path}/summary_stats.csv")
-        print(f"Summary dataframe saved to {new_folder_path} as a .csv file")
+        print(f"Summary dataframe saved to {new_folder_path} as a .csv file \n")
     else:
-        print("Error: A .csv file for summary stats already exists")
+        print("Error: A .csv file for summary stats already exists \n")
 
     df_to_write = {
         "Daily Prices": prices_data,
@@ -277,10 +286,12 @@ def data_write(
                 excel_output, engine="xlsxwriter", date_format=date_format
             ) as writer:
                 for sheet_name, df in df_to_write.items():
-                    df.to_excel(writer, sheet_name=sheet_name)
-            print(f"Dataframes saved to {new_folder_path} as an excel file")
+                    df.to_excel(writer, sheet_name=sheet_name, index=False)
+            print(f"Dataframes saved to {new_folder_path} as an excel file \n")
 
         except Exception as e:
-            print(f"An error occurred while writing data frames to an excel file {e}")
+            print(
+                f"An error occurred while writing data frames to an excel file {e} \n"
+            )
     else:
-        print("Error: A combined excel file already exists")
+        print("Error: A combined excel file already exists \n")
