@@ -1,19 +1,26 @@
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
 import yfinance as yf
+from dateutil.relativedelta import relativedelta
 
 # To donwload data from YFinance API
 
 
-def download_data(tickers, start_date, end_date, progress=True):
+def download_data(tickers, lookback_window, progress=True):
     print("Downloading stock data from Yahoo Finance...")
     print(f"Tickers: {', '.join(tickers)}")
+
+    current_date = datetime.now()
 
     try:
         data = yf.download(
             tickers=tickers,
-            start=start_date,
-            end=end_date,
+            start=(current_date - relativedelta(years=lookback_window)).strftime(
+                "%Y-%m-%d"
+            ),
+            end=current_date.strftime("%Y-%m-%d"),
             progress=progress,
             group_by="tickers",
             auto_adjust=True,
@@ -77,7 +84,13 @@ def process_raw_data(raw_data, tickers):
 # To obtain stats like annulized returns and volitility, Sharpe ratio, max drawdown, and total returns.
 
 
-def summary_stats(returns, prices, risk_free_rate, start_date, end_date):
+def summary_stats(returns, prices, risk_free_rate, lookback_window):
+    current_date = datetime.now()
+    start_date = (current_date - relativedelta(years=lookback_window)).strftime(
+        "%Y-%m-%d"
+    )
+    end_date = current_date.strftime("%Y-%m-%d")
+
     stats = pd.DataFrame(index=returns.columns)
 
     number_trading_days = 252
@@ -265,7 +278,7 @@ def data_write(
         print("Error: A .csv file for volumes already exists \n")
 
     if not os.path.exists(f"{new_folder_path}/summary_stats.csv"):
-        summary_stats_data.to_csv(f"{new_folder_path}/summary_stats.csv")
+        summary_stats_data.to_csv(f"{new_folder_path}/summary_stats.csv", index=False)
         print(f"Summary dataframe saved to {new_folder_path} as a .csv file \n")
     else:
         print("Error: A .csv file for summary stats already exists \n")
