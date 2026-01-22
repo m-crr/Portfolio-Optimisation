@@ -23,15 +23,15 @@ def plot_correlation_heatmap(correlation_matrix, folder_to_save, file_name):
         corr_values.size - len(corr_values)
     )
     print(
-        f"The average pairwise correlation of assets within the portfolio: {average_corr:.3f}"
+        f"The average pairwise correlation of assets within the portfolio: {average_corr:.3f}\n"
     )
 
     if average_corr < 0.3:
-        print("Low average correlation - Good diversification")
+        print("Low average correlation - Good diversification\n")
     elif average_corr > 0.3 and average_corr < 0.6:
-        print("Moderate correlation - Decent diversification")
+        print("Moderate correlation - Decent diversification\n")
     else:
-        print("High correlation - Limited diversification")
+        print("High correlation - Limited diversification\n")
 
     fig, ax = plt.subplots(figsize=(12, 10))
 
@@ -77,10 +77,10 @@ def plot_rolling_vol(returns, rolling_window, stocks_list, folder_to_save, file_
     rolling_vol = (returns.rolling(window=rolling_window).std()) * (np.sqrt(252))
 
     stocks = stocks_list
-    selected_stocks = [s for s in stocks if s in rolling_vol.columns]
+    # selected_stocks = [s for s in stocks if s in rolling_vol.columns]
 
     fig, ax = plt.subplots(figsize=(14, 8))
-    for stock in selected_stocks:
+    for stock in stocks:
         sns.lineplot(
             data=rolling_vol[stock],
             ax=ax,
