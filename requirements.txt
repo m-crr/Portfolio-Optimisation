@@ -30,7 +30,7 @@ scipy                           # Scientific computing
 statsmodels                     # Statistical modeling
 
 # Technical Indicators
-ta                              # Technical analysis library                        # Technical analysis (optional, requires C++ compiler)
+ta                              # Technical analysis library
 
 # Backtesting
 bt                              # Backtesting framework
